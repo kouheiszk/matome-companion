@@ -13,7 +13,10 @@
 
 Route::get('/', function()
 {
-	return View::make('hello');
+	// return View::make('hello');
+
+	$crawler = new \Matome\Crawler\Crawler();
+	return '<pre>' . print_r($crawler->run(), true) . '</pre>';
 });
 
 Route::get('users', 'UsersController@index');

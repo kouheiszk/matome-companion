@@ -10,13 +10,15 @@
 		}
 	],
 	"require": {
-		"laravel/framework": "4.2.*"
+		"laravel/framework": "4.2.*",
+		"fabpot/goutte": "2.*"
 	},
 	"require-dev": {
 		"way/generators": "2.*",
 		"phpunit/phpunit": "4.1.*",
 		"mockery/mockery": "dev-master",
 		"summerstreet/woodling": "0.1.*",
+		"fzaninotto/faker": "dev-master",
 		"barryvdh/laravel-ide-helper": "1.*"
 	},
 	"autoload": {
@@ -26,6 +28,7 @@
 			"app/models",
 			"app/database/migrations",
 			"app/database/seeds",
+			"app/libraries",
 			"app/tests/TestCase.php"
 		]
 	},
