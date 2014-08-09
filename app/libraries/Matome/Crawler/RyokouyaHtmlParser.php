@@ -1,8 +1,11 @@
 <?php
 
+use Goutte\Client;
 use Symfony\Component\DomCrawler\Crawler;
 
-class RyokouyaHtmlParser {
+class RyokouyaHtmlParser extends HtmlParser
+{
+	public static $SITE_DOMAIN = 'ryokou-ya.co.jp';
 
 	public function parseHotelPage(Crawler $crawler)
 	{
@@ -86,7 +89,6 @@ class RyokouyaHtmlParser {
 
 			/**
 			 * 料金
-			 *
 			 * header label label ...
 			 * header price price ...
 			 * header price price ...
@@ -124,5 +126,31 @@ class RyokouyaHtmlParser {
 		});
 
 		return $hotel;
+	}
+
+	public function findHotelPageUrls($baseUrl)
+	{
+		$client = new Client();
+		$urls = array();
+
+		try {
+			for ($page = 1; $page < 20; ++$page) {
+				$crawler = $client->request('GET', $baseUrl . '?p=' . $page);
+				$hotelCount = $crawler->filter('div.dispnum > span.hitnumber')->text();
+				if (!is_numeric($hotelCount) || $hotelCount == 0) break;
+				$crawler->filter('p.name > a')->each(function ($element) use ($baseUrl, &$urls) {
+					$path = $element->extract(array('href'))[0];
+					$url = self::createUrl($baseUrl, $path);
+					$urls[] = $url;
+				});
+			}
+		} catch (Exception $e) {
+			// HTMLの構造が変わっている可能性があるため、エラーを記録する
+			Log::error($e);
+
+			return null;
+		}
+
+		return $urls;
 	}
 } 

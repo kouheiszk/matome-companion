@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CronUrls extends Migration {
+class CronSites extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,12 +12,12 @@ class CronUrls extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('cron_urls', function($t) {
+		Schema::create('cron_sites', function($t) {
 			// auto increment id (primary key)
 			$t->increments('id');
 
 			$t->string('domain');
-			$t->string('url');
+			$t->string('base_url');
 			$t->dateTime('last_cron_date')->nullable();
 			$t->boolean('last_cron_successed')->default(false);
 			$t->boolean('will_cron')->default(true);
@@ -36,7 +36,7 @@ class CronUrls extends Migration {
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('cron_urls');
+		Schema::dropIfExists('cron_sites');
 	}
 
 }
