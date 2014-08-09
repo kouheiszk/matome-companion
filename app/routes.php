@@ -15,8 +15,15 @@ Route::get('/', function()
 {
 	// return View::make('hello');
 
-	$crawler = new \Matome\Crawler\Crawler();
-	return '<pre>' . print_r($crawler->run(), true) . '</pre>';
+	$crawler = new Crawler();
+
+	$output = '';
+	$output .= '<pre>';
+	$output .= App::environment() . "\n";
+	$output .= print_r($crawler->run(), true);
+	$output .= '</pre>';
+
+	return $output;
 });
 
 Route::get('users', 'UsersController@index');
