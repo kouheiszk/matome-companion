@@ -1,25 +1,39 @@
 <?php
 
 use Goutte\Client;
-use Illuminate\Log;
 
 class Crawler
 {
+	private static $FETCH_LIMIT = 2;
+
 	public function __construct()
 	{
 	}
 
 	public function run()
 	{
-		if (!$this->__getCronUrls()) {
-			//
-			return false;
-		}
+//		$status = $this->__retrieveCronUrls();
+//		if (!$status) return false;
 
-		return true;
+		$status = $this->__retrieveHotelInformation();
+		if (!$status) return false;
+
+		return $status;
 	}
 
-	private function __getCronUrls()
+	/**
+	 * Private methods
+	 */
+
+	private function __retrieveHotelInformation()
+	{
+		$cronUrls = CronUrl::orderBy('last_cron_successed', 'asc')->orderBy('last_cron_date', 'asc')->limit(self::$FETCH_LIMIT)->get();
+		$cronUrl = $cronUrls->get(0);
+		$client = new Client();
+		return HtmlParser::parser($cronUrl->domain)->parseHotelPage($client->request('GET', $cronUrl->url));
+	}
+
+	private function __retrieveCronUrls()
 	{
 		$cronUrls = CronUrl::all()->toBase()->map(function (CronUrl $cronUrl) {
 			return $cronUrl->url;
@@ -35,13 +49,8 @@ class Crawler
 		return ($urls != null);
 	}
 
-	/**
-	 * Private methods
-	 */
-
 	private function __getUrlList()
 	{
-
 		$baseSearchUrl = 'http://ryokou-ya.co.jp/companion/search/';
 
 		$client = new Client();
